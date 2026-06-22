@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PaymentMethod;
+use App\Models\Appointment;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
@@ -20,10 +21,11 @@ test('it casts payment method, VND amount, provider data, and timestamps', funct
         ->and($payment->paid_at)->toBeInstanceOf(DateTimeInterface::class);
 });
 
-test('it belongs to an order, optional wallet transaction, and processor', function (): void {
+test('it defines payment relationships', function (): void {
     $payment = new Payment();
 
     expect($payment->order()->getRelated())->toBeInstanceOf(Order::class)
+        ->and($payment->appointment()->getRelated())->toBeInstanceOf(Appointment::class)
         ->and($payment->walletTransaction()->getRelated())->toBeInstanceOf(WalletTransaction::class)
         ->and($payment->processedBy()->getRelated())->toBeInstanceOf(User::class);
 });

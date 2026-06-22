@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'code',
@@ -52,5 +53,13 @@ class Promotion extends Model
     public function branches(): BelongsToMany
     {
         return $this->belongsToMany(Branch::class, 'promotion_branches')->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<PromotionUsage, $this>
+     */
+    public function usages(): HasMany
+    {
+        return $this->hasMany(PromotionUsage::class);
     }
 }

@@ -3,8 +3,14 @@
 use App\Enums\OrderStatus;
 use App\Models\Branch;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\PromotionUsage;
+use App\Models\Refund;
+use App\Models\Shipment;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Models\WalletTransaction;
 
 test('it casts order status, amounts, and timestamps to their expected types', function (): void {
     $order = new Order([
@@ -24,11 +30,17 @@ test('it casts order status, amounts, and timestamps to their expected types', f
         ->and($order->placed_at)->toBeInstanceOf(DateTimeInterface::class);
 });
 
-test('it belongs to its customer, branch, creator, and source address', function (): void {
+test('it defines order relationships', function (): void {
     $order = new Order();
 
     expect($order->user()->getRelated())->toBeInstanceOf(User::class)
         ->and($order->branch()->getRelated())->toBeInstanceOf(Branch::class)
         ->and($order->createdBy()->getRelated())->toBeInstanceOf(User::class)
-        ->and($order->userAddress()->getRelated())->toBeInstanceOf(UserAddress::class);
+        ->and($order->userAddress()->getRelated())->toBeInstanceOf(UserAddress::class)
+        ->and($order->items()->getRelated())->toBeInstanceOf(OrderItem::class)
+        ->and($order->payments()->getRelated())->toBeInstanceOf(Payment::class)
+        ->and($order->shipment()->getRelated())->toBeInstanceOf(Shipment::class)
+        ->and($order->walletTransactions()->getRelated())->toBeInstanceOf(WalletTransaction::class)
+        ->and($order->promotionUsages()->getRelated())->toBeInstanceOf(PromotionUsage::class)
+        ->and($order->refunds()->getRelated())->toBeInstanceOf(Refund::class);
 });

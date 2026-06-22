@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['user_id', 'branch_id'])]
 class Cart extends Model
@@ -23,5 +24,13 @@ class Cart extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    /**
+     * @return HasMany<CartItem, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

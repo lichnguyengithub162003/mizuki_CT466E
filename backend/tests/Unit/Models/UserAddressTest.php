@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use App\Models\User;
 use App\Models\UserAddress;
 
@@ -13,8 +14,9 @@ test('it casts delivery address attributes to their expected types', function ()
         ->and($address->is_default)->toBeTrue();
 });
 
-test('it belongs to a user', function (): void {
+test('it defines delivery address relationships', function (): void {
     $address = new UserAddress();
 
-    expect($address->user()->getRelated())->toBeInstanceOf(User::class);
+    expect($address->user()->getRelated())->toBeInstanceOf(User::class)
+        ->and($address->orders()->getRelated())->toBeInstanceOf(Order::class);
 });

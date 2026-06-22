@@ -3,6 +3,7 @@
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
+use App\Models\Review;
 
 test('it casts order item snapshot data to their expected types', function (): void {
     $item = new OrderItem([
@@ -18,9 +19,10 @@ test('it casts order item snapshot data to their expected types', function (): v
         ->and($item->line_total)->toBeInt()->toBe(640000);
 });
 
-test('it belongs to an order and optional product variant', function (): void {
+test('it defines order item relationships', function (): void {
     $item = new OrderItem();
 
     expect($item->order()->getRelated())->toBeInstanceOf(Order::class)
-        ->and($item->productVariant()->getRelated())->toBeInstanceOf(ProductVariant::class);
+        ->and($item->productVariant()->getRelated())->toBeInstanceOf(ProductVariant::class)
+        ->and($item->review()->getRelated())->toBeInstanceOf(Review::class);
 });

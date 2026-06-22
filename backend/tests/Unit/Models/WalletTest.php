@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\WalletTransaction;
 
 test('it casts wallet balance to an integer', function (): void {
     $wallet = new Wallet(['balance' => '500000']);
@@ -9,8 +10,9 @@ test('it casts wallet balance to an integer', function (): void {
     expect($wallet->balance)->toBeInt()->toBe(500000);
 });
 
-test('it belongs to a user', function (): void {
+test('it defines wallet relationships', function (): void {
     $wallet = new Wallet();
 
-    expect($wallet->user()->getRelated())->toBeInstanceOf(User::class);
+    expect($wallet->user()->getRelated())->toBeInstanceOf(User::class)
+        ->and($wallet->transactions()->getRelated())->toBeInstanceOf(WalletTransaction::class);
 });

@@ -2,13 +2,15 @@
 
 use App\Models\Branch;
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\User;
 
-test('it belongs to a user and optional fulfillment branch', function (): void {
+test('it defines cart relationships', function (): void {
     $cart = new Cart();
 
     expect($cart->user()->getRelated())->toBeInstanceOf(User::class)
-        ->and($cart->branch()->getRelated())->toBeInstanceOf(Branch::class);
+        ->and($cart->branch()->getRelated())->toBeInstanceOf(Branch::class)
+        ->and($cart->items()->getRelated())->toBeInstanceOf(CartItem::class);
 });
 
 test('it permits user and branch assignment', function (): void {

@@ -2,6 +2,7 @@
 
 use App\Models\Branch;
 use App\Models\Promotion;
+use App\Models\PromotionUsage;
 
 test('it casts promotion amounts, limits, rules, dates, and active state', function (): void {
     $promotion = new Promotion([
@@ -25,8 +26,9 @@ test('it casts promotion amounts, limits, rules, dates, and active state', funct
         ->and($promotion->is_active)->toBeTrue();
 });
 
-test('it scopes promotions to eligible branches', function (): void {
+test('it defines promotion relationships', function (): void {
     $promotion = new Promotion();
 
-    expect($promotion->branches()->getRelated())->toBeInstanceOf(Branch::class);
+    expect($promotion->branches()->getRelated())->toBeInstanceOf(Branch::class)
+        ->and($promotion->usages()->getRelated())->toBeInstanceOf(PromotionUsage::class);
 });

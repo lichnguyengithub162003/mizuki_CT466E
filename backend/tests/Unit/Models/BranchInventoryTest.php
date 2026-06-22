@@ -2,6 +2,7 @@
 
 use App\Models\Branch;
 use App\Models\BranchInventory;
+use App\Models\InventoryTransaction;
 use App\Models\ProductVariant;
 
 test('it casts stock quantities to integers', function (): void {
@@ -16,9 +17,10 @@ test('it casts stock quantities to integers', function (): void {
         ->and($inventory->reorder_level)->toBeInt()->toBe(10);
 });
 
-test('it belongs to a branch and product variant', function (): void {
+test('it defines inventory relationships', function (): void {
     $inventory = new BranchInventory();
 
     expect($inventory->branch()->getRelated())->toBeInstanceOf(Branch::class)
-        ->and($inventory->productVariant()->getRelated())->toBeInstanceOf(ProductVariant::class);
+        ->and($inventory->productVariant()->getRelated())->toBeInstanceOf(ProductVariant::class)
+        ->and($inventory->transactions()->getRelated())->toBeInstanceOf(InventoryTransaction::class);
 });

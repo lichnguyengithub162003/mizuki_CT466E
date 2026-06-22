@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Appointment;
+use App\Models\Branch;
+use App\Models\BranchService;
 use App\Models\Service;
 
 test('it casts service duration, price, visibility, and sort order', function (): void {
@@ -14,4 +17,12 @@ test('it casts service duration, price, visibility, and sort order', function ()
         ->and($service->price)->toBeInt()->toBe(450000)
         ->and($service->is_active)->toBeTrue()
         ->and($service->sort_order)->toBeInt()->toBe(2);
+});
+
+test('it defines service availability and appointment relationships', function (): void {
+    $service = new Service();
+
+    expect($service->branchServices()->getRelated())->toBeInstanceOf(BranchService::class)
+        ->and($service->branches()->getRelated())->toBeInstanceOf(Branch::class)
+        ->and($service->appointments()->getRelated())->toBeInstanceOf(Appointment::class);
 });
