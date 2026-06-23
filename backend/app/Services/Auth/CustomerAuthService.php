@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Services\Auth;
+
+use App\Enums\UserRole;
+use App\Models\User;
+use App\Repositories\UserRepository;
+use App\Services\BaseService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class CustomerAuthService extends BaseService
+{
+    public function __construct(
+        private readonly UserRepository $users,
+    ) {
+    }
+
+    /**
+     * @param array{name: string, email: string, password: string} $data
+     */
+    public function register(array $data, Request $request): User
+    {
+        $user = $this->users->createCustomer([
+            'name' => trim($data['name']),
+            'email' => strtolower(trim($data['email'])),
+            'password' => $data['password'],
+        ]);
+
+        $this->authenticate($user, $request);
+
+        return $user;
+    }
+
+    /**
+     * @param array{email: string, password: string} $data
+     *
+     * @throws AuthenticationException
+     */
+    public function login(array $data, Request $request): User
+    {
+        $user = $this->users->findByEmail(strtolower(trim($data['email'])));
+
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
+            throw new AuthenticationException('Thông tin đăng nhập không đúng.');
+        }
+
+        if ($user->role !== UserRole::Customer) {
+            throw new AuthenticationException('Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+        }
+
+        $this->authenticate($user, $request);
+
+        return $user;
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function currentCustomer(User $user): User
+    {
+        if ($user->role !== UserRole::Customer) {
+            throw new AuthorizationException('Tài khoản không có quyền truy cập khu vực khách hàng.');
+        }
+
+        return $user;
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function logout(User $user, Request $request): void
+    {
+        $this->currentCustomer($user);
+
+        Auth::guard('web')->logout();
+
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        Auth::forgetGuards();
+    }
+
+    private function authenticate(User $user, Request $request): void
+    {
+        Auth::guard('web')->login($user);
+
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+    }
+}
