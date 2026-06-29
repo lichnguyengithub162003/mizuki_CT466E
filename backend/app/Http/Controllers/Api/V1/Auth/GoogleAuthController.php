@@ -21,7 +21,7 @@ class GoogleAuthController extends BaseController
         return $this->successResponse(
             request: $request,
             resource: new OAuthRedirectResource(['redirect_url' => $this->auth->redirectUrl()]),
-            message: 'Tạo liên kết đăng nhập Google thành công.',
+            message: 'Tạo liên kết đăng nhập Google thành công!',
         );
     }
 
@@ -32,7 +32,7 @@ class GoogleAuthController extends BaseController
         return $this->successResponse(
             request: $request,
             resource: new AuthenticatedUserResource($user),
-            message: 'Đăng nhập Google thành công.',
+            message: 'Đăng nhập Google thành công!',
         );
     }
 }

@@ -28,7 +28,7 @@ class EnsureUserHasRole
             ->all();
 
         if ($allowedRoles === [] || ! in_array($user->role, $allowedRoles, true)) {
-            throw new AuthorizationException('Bạn không có quyền truy cập chức năng này.');
+            throw new AuthorizationException('Bạn không có quyền truy cập chức năng này');
         }
 
         return $next($request);

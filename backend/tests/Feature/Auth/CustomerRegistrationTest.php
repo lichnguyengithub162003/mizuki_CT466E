@@ -17,7 +17,7 @@ test('a customer can register with email and password', function (): void {
 
     $response->assertCreated()
         ->assertJsonPath('success', true)
-        ->assertJsonPath('message', 'Đăng ký tài khoản thành công.')
+        ->assertJsonPath('message', 'Đăng ký tài khoản thành công!')
         ->assertJsonPath('data.name', 'Mizuki Customer')
         ->assertJsonPath('data.email', 'customer@example.com')
         ->assertJsonPath('data.role', UserRole::Customer->value)
@@ -57,9 +57,9 @@ test('customer registration validation errors use the API envelope', function ()
 
     $response->assertUnprocessable()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Dữ liệu không hợp lệ.')
-        ->assertJsonPath('data.errors.name.0', 'Vui lòng nhập họ tên.')
-        ->assertJsonPath('data.errors.email.0', 'Email không đúng định dạng.')
-        ->assertJsonPath('data.errors.password.0', 'Xác nhận mật khẩu không khớp.')
+        ->assertJsonPath('message', 'Dữ liệu không hợp lệ')
+        ->assertJsonPath('data.errors.name.0', 'Vui lòng nhập họ tên')
+        ->assertJsonPath('data.errors.email.0', 'Email không đúng định dạng')
+        ->assertJsonPath('data.errors.password.0', 'Xác nhận mật khẩu không khớp')
         ->assertJsonPath('meta', []);
 });

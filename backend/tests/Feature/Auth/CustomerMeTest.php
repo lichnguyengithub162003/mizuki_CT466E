@@ -19,7 +19,7 @@ test('an authenticated customer can view their account', function (): void {
 
     $response->assertOk()
         ->assertJsonPath('success', true)
-        ->assertJsonPath('message', 'Lấy thông tin tài khoản thành công.')
+        ->assertJsonPath('message', 'Lấy thông tin tài khoản thành công!')
         ->assertJsonPath('data.id', $user->id)
         ->assertJsonPath('data.email', 'customer@example.com')
         ->assertJsonPath('data.role', UserRole::Customer->value);
@@ -30,7 +30,7 @@ test('a guest cannot view the customer account endpoint', function (): void {
 
     $response->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục.');
+        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục');
 });
 
 test('an authenticated staff user cannot view the customer account endpoint', function (): void {
@@ -44,5 +44,5 @@ test('an authenticated staff user cannot view the customer account endpoint', fu
 
     $response->assertForbidden()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Tài khoản không có quyền truy cập khu vực khách hàng.');
+        ->assertJsonPath('message', 'Tài khoản không có quyền truy cập khu vực khách hàng!');
 });

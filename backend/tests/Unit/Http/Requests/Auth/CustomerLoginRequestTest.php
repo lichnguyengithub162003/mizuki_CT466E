@@ -21,7 +21,7 @@ test('it provides Vietnamese login validation messages', function (): void {
     $request = new CustomerLoginRequest();
     $messages = $request->messages();
 
-    expect($messages['email.required'])->toBe('Vui lòng nhập email.')
-        ->and($messages['email.email'])->toBe('Email không đúng định dạng.')
-        ->and($messages['password.required'])->toBe('Vui lòng nhập mật khẩu.');
+    expect($messages['email.required'])->toBe('Vui lòng nhập email')
+        ->and($messages['email.email'])->toBe('Email không đúng định dạng')
+        ->and($messages['password.required'])->toBe('Vui lòng nhập mật khẩu');
 });

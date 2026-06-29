@@ -21,7 +21,7 @@ test('a customer can log in with email and password', function (): void {
 
     $response->assertOk()
         ->assertJsonPath('success', true)
-        ->assertJsonPath('message', 'Đăng nhập thành công.')
+        ->assertJsonPath('message', 'Đăng nhập thành công!')
         ->assertJsonPath('data.id', $user->id)
         ->assertJsonPath('data.email', 'customer@example.com')
         ->assertJsonPath('data.role', UserRole::Customer->value);
@@ -43,7 +43,7 @@ test('customer login rejects invalid credentials', function (): void {
 
     $response->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Thông tin đăng nhập không đúng.')
+        ->assertJsonPath('message', 'Thông tin đăng nhập không đúng!')
         ->assertJsonPath('data', null)
         ->assertJsonPath('meta', []);
 });
@@ -62,7 +62,7 @@ test('customer login rejects internal staff accounts', function (): void {
 
     $response->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+        ->assertJsonPath('message', 'Tài khoản không có quyền đăng nhập khu vực khách hàng!');
 });
 
 test('customer login validation errors use the API envelope', function (): void {
@@ -73,8 +73,8 @@ test('customer login validation errors use the API envelope', function (): void 
 
     $response->assertUnprocessable()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Dữ liệu không hợp lệ.')
-        ->assertJsonPath('data.errors.email.0', 'Email không đúng định dạng.')
-        ->assertJsonPath('data.errors.password.0', 'Vui lòng nhập mật khẩu.')
+        ->assertJsonPath('message', 'Dữ liệu không hợp lệ')
+        ->assertJsonPath('data.errors.email.0', 'Email không đúng định dạng')
+        ->assertJsonPath('data.errors.password.0', 'Vui lòng nhập mật khẩu')
         ->assertJsonPath('meta', []);
 });

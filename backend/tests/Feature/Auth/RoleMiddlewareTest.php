@@ -44,12 +44,12 @@ test('an authenticated user with the wrong role receives forbidden', function ()
     $this->getJson('/api/testing/role-middleware/cashier')
         ->assertForbidden()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Bạn không có quyền truy cập chức năng này.');
+        ->assertJsonPath('message', 'Bạn không có quyền truy cập chức năng này');
 });
 
 test('a guest receives unauthorized before role access is checked', function (): void {
     $this->getJson('/api/testing/role-middleware/cashier')
         ->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục.');
+        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục');
 });

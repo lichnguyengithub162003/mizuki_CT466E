@@ -35,6 +35,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function sendPasswordResetNotification($token): void
+{
+    $frontendUrl = config('app.frontend_url', 'http://localhost:5173');
+    $resetUrl = $frontendUrl . '/reset-password?token=' . $token . '&email=' . urlencode($this->email);
+
+    \Illuminate\Support\Facades\Log::info('Password reset link', [
+        'email' => $this->email,
+        'url'   => $resetUrl,
+        'token' => $token,
+    ]);
+
+    // TODO: Gửi email thật khi deploy production
+    // $this->notify(new \App\Notifications\ResetPasswordNotification($resetUrl));
+}
+
     /**
      * @return BelongsTo<Branch, $this>
      */

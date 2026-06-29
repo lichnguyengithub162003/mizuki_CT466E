@@ -64,7 +64,7 @@ test('it rejects login when the email does not exist', function (): void {
         'email' => 'missing@example.com',
         'password' => 'secret-password',
     ], customerAuthRequest());
-})->throws(AuthenticationException::class, 'Thông tin đăng nhập không đúng.');
+})->throws(AuthenticationException::class, 'Thông tin đăng nhập không đúng');
 
 test('it rejects login when the password is invalid', function (): void {
     $service = new CustomerAuthService(new UserRepository(new User()));
@@ -78,7 +78,7 @@ test('it rejects login when the password is invalid', function (): void {
         'email' => 'customer@example.com',
         'password' => 'wrong-password',
     ], customerAuthRequest());
-})->throws(AuthenticationException::class, 'Thông tin đăng nhập không đúng.');
+})->throws(AuthenticationException::class, 'Thông tin đăng nhập không đúng');
 
 test('it rejects non-customer users from customer login', function (): void {
     $service = new CustomerAuthService(new UserRepository(new User()));
@@ -92,7 +92,7 @@ test('it rejects non-customer users from customer login', function (): void {
         'email' => 'cashier@example.com',
         'password' => 'secret-password',
     ], customerAuthRequest());
-})->throws(AuthenticationException::class, 'Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+})->throws(AuthenticationException::class, 'Tài khoản không có quyền đăng nhập khu vực khách hàng!');
 
 test('it returns the current authenticated customer', function (): void {
     $service = new CustomerAuthService(new UserRepository(new User()));
@@ -110,7 +110,7 @@ test('it rejects non-customer users from the customer account context', function
     ]);
 
     $service->currentCustomer($user);
-})->throws(AuthorizationException::class, 'Tài khoản không có quyền truy cập khu vực khách hàng.');
+})->throws(AuthorizationException::class, 'Tài khoản không có quyền truy cập khu vực khách hàng!');
 
 test('it logs out an authenticated customer and invalidates the session', function (): void {
     $service = new CustomerAuthService(new UserRepository(new User()));
@@ -138,4 +138,4 @@ test('it rejects non-customer users from logout', function (): void {
     $request = Request::create('/api/v1/auth/logout', 'POST');
 
     $service->logout($user, $request);
-})->throws(AuthorizationException::class, 'Tài khoản không có quyền truy cập khu vực khách hàng.');
+})->throws(AuthorizationException::class, 'Tài khoản không có quyền truy cập khu vực khách hàng!');

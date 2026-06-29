@@ -9,13 +9,14 @@ use App\Http\Resources\Auth\AuthenticatedUserResource;
 use App\Services\Auth\CustomerAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 
 class CustomerAuthController extends BaseController
 {
     public function __construct(
         private readonly CustomerAuthService $auth,
-    ) {
-    }
+    ) {}
 
     public function register(CustomerRegisterRequest $request): JsonResponse
     {
@@ -24,7 +25,7 @@ class CustomerAuthController extends BaseController
         return $this->successResponse(
             request: $request,
             resource: new AuthenticatedUserResource($user),
-            message: 'Đăng ký tài khoản thành công.',
+            message: 'Đăng ký tài khoản thành công!',
             status: 201,
         );
     }
@@ -36,7 +37,7 @@ class CustomerAuthController extends BaseController
         return $this->successResponse(
             request: $request,
             resource: new AuthenticatedUserResource($user),
-            message: 'Đăng nhập thành công.',
+            message: 'Đăng nhập thành công!',
         );
     }
 
@@ -49,7 +50,7 @@ class CustomerAuthController extends BaseController
         return $this->successResponse(
             request: $request,
             resource: new AuthenticatedUserResource($user),
-            message: 'Lấy thông tin tài khoản thành công.',
+            message: 'Lấy thông tin tài khoản thành công!',
         );
     }
 
@@ -62,7 +63,29 @@ class CustomerAuthController extends BaseController
         return $this->successResponse(
             request: $request,
             resource: new AuthenticatedUserResource($authenticatedUser),
-            message: 'Đăng xuất thành công.',
+            message: 'Đăng xuất thành công!',
+        );
+    }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $this->auth->forgotPassword($request->validated()['email']);
+
+        return $this->successResponse(
+            request: $request,
+            resource: null,
+            message: 'Nếu email tồn tại, chúng tôi đã gửi link đặt lại mật khẩu!',
+        );
+    }
+
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        $this->auth->resetPassword($request->validated());
+
+        return $this->successResponse(
+            request: $request,
+            resource: null,
+            message: 'Đặt lại mật khẩu thành công!',
         );
     }
 }

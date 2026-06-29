@@ -18,6 +18,12 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('logout', [CustomerAuthController::class, 'logout'])
             ->middleware('auth:sanctum')
             ->name('logout');
+        Route::post('forgot-password', [CustomerAuthController::class, 'forgotPassword'])
+            ->middleware('throttle:auth.register')
+            ->name('forgot-password');
+        Route::post('reset-password', [CustomerAuthController::class, 'resetPassword'])
+            ->middleware('throttle:auth.register')
+            ->name('reset-password');
         Route::get('google/redirect', [GoogleAuthController::class, 'redirect'])
             ->middleware('throttle:auth.login')
             ->name('google.redirect');

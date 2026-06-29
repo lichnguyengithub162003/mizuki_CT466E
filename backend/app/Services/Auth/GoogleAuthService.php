@@ -43,7 +43,7 @@ class GoogleAuthService extends BaseService
         try {
             $googleUser = $this->socialite->driver(self::PROVIDER)->user();
         } catch (Throwable) {
-            throw new AuthenticationException('Không thể xác thực tài khoản Google.');
+            throw new AuthenticationException('Không thể xác thực tài khoản Google!');
         }
 
         $user = $this->resolveCustomer($googleUser);
@@ -61,7 +61,7 @@ class GoogleAuthService extends BaseService
         $providerEmail = Str::lower(trim((string) $googleUser->getEmail()));
 
         if ($providerUserId === '' || $providerEmail === '' || ! $this->hasVerifiedEmail($googleUser)) {
-            throw new AuthenticationException('Không thể xác thực email Google.');
+            throw new AuthenticationException('Không thể xác thực email Google!');
         }
 
         $socialAccount = $this->socialAccounts->findByProviderAndProviderUserId(self::PROVIDER, $providerUserId);
@@ -107,7 +107,7 @@ class GoogleAuthService extends BaseService
     private function ensureCustomer(User $user): User
     {
         if ($user->role !== UserRole::Customer) {
-            throw new AuthenticationException('Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+            throw new AuthenticationException('Tài khoản không có quyền đăng nhập khu vực khách hàng!');
         }
 
         return $user;

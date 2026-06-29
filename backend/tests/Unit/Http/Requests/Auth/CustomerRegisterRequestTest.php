@@ -26,7 +26,7 @@ test('it provides Vietnamese registration validation messages', function (): voi
     $request = new CustomerRegisterRequest();
     $messages = $request->messages();
 
-    expect($messages['name.required'])->toBe('Vui lòng nhập họ tên.')
-        ->and($messages['email.unique'])->toBe('Email này đã được sử dụng.')
-        ->and($messages['password.confirmed'])->toBe('Xác nhận mật khẩu không khớp.');
+    expect($messages['name.required'])->toBe('Vui lòng nhập họ tên')
+        ->and($messages['email.unique'])->toBe('Email này đã được sử dụng')
+        ->and($messages['password.confirmed'])->toBe('Xác nhận mật khẩu không khớp');
 });

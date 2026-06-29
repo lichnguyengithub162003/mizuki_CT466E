@@ -11,6 +11,9 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 
 class CustomerAuthService extends BaseService
 {
@@ -45,11 +48,11 @@ class CustomerAuthService extends BaseService
         $user = $this->users->findByEmail(strtolower(trim($data['email'])));
 
         if (! $user || ! Hash::check($data['password'], $user->password)) {
-            throw new AuthenticationException('Thông tin đăng nhập không đúng.');
+            throw new AuthenticationException('Thông tin đăng nhập không đúng!');
         }
 
         if ($user->role !== UserRole::Customer) {
-            throw new AuthenticationException('Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+            throw new AuthenticationException('Tài khoản không có quyền đăng nhập khu vực khách hàng!');
         }
 
         $this->authenticate($user, $request);
@@ -63,7 +66,7 @@ class CustomerAuthService extends BaseService
     public function currentCustomer(User $user): User
     {
         if ($user->role !== UserRole::Customer) {
-            throw new AuthorizationException('Tài khoản không có quyền truy cập khu vực khách hàng.');
+            throw new AuthorizationException('Tài khoản không có quyền truy cập khu vực khách hàng!');
         }
 
         return $user;
@@ -94,4 +97,42 @@ class CustomerAuthService extends BaseService
             $request->session()->regenerate();
         }
     }
+
+    public function forgotPassword(string $email): void
+{
+    Password::sendResetLink(
+        ['email' => $email],
+        function ($user, $token) use ($email) {
+            $resetUrl = config('app.frontend_url', 'http://localhost:5173')
+                . '/reset-password?token=' . $token
+                . '&email=' . urlencode($email);
+
+            $user->sendPasswordResetNotification($token);
+        }
+    );
+}
+
+    public function resetPassword(array $data): void
+{
+    $status = Password::reset(
+        [
+            'email'                 => $data['email'],
+            'password'              => $data['password'],
+            'password_confirmation' => $data['password'],
+            'token'                 => $data['token'],
+        ],
+        function ($user, $password) {
+            $user->forceFill([
+                'password'       => $password,
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    if ($status !== Password::PASSWORD_RESET) {
+        throw new \Exception('Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn');
+    }
+}
 }

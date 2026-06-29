@@ -22,7 +22,7 @@ test('an authenticated customer can log out', function (): void {
 
     $response->assertOk()
         ->assertJsonPath('success', true)
-        ->assertJsonPath('message', 'Đăng xuất thành công.')
+        ->assertJsonPath('message', 'Đăng xuất thành công!')
         ->assertJsonPath('data.id', $user->id)
         ->assertJsonPath('data.email', 'customer@example.com')
         ->assertJsonPath('data.role', UserRole::Customer->value)
@@ -31,7 +31,7 @@ test('an authenticated customer can log out', function (): void {
     $this->getJson('/api/v1/auth/me')
         ->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục.');
+        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục');
 });
 
 test('a guest cannot log out', function (): void {
@@ -39,7 +39,7 @@ test('a guest cannot log out', function (): void {
 
     $response->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục.');
+        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục');
 });
 
 test('a repeated logout request is rejected after the session is invalidated', function (): void {
@@ -61,7 +61,7 @@ test('a repeated logout request is rejected after the session is invalidated', f
     $this->postJson('/api/v1/auth/logout')
         ->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục.');
+        ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục');
 });
 
 test('an authenticated staff user cannot log out through the customer endpoint', function (): void {
@@ -75,5 +75,5 @@ test('an authenticated staff user cannot log out through the customer endpoint',
 
     $response->assertForbidden()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Tài khoản không có quyền truy cập khu vực khách hàng.');
+        ->assertJsonPath('message', 'Tài khoản không có quyền truy cập khu vực khách hàng!');
 });

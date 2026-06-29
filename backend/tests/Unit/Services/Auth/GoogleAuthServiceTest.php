@@ -123,7 +123,7 @@ test('it rejects google login for internal staff email accounts', function (): v
     $service = googleAuthServiceWithUser(verifiedGoogleUser());
 
     $service->handleCallback(googleCallbackRequest());
-})->throws(AuthenticationException::class, 'Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+})->throws(AuthenticationException::class, 'Tài khoản không có quyền đăng nhập khu vực khách hàng!');
 
 test('it rejects google accounts without a verified email', function (): void {
     $service = googleAuthServiceWithUser(verifiedGoogleUser([
@@ -131,4 +131,4 @@ test('it rejects google accounts without a verified email', function (): void {
     ]));
 
     $service->handleCallback(googleCallbackRequest());
-})->throws(AuthenticationException::class, 'Không thể xác thực email Google.');
+})->throws(AuthenticationException::class, 'Không thể xác thực email Google');

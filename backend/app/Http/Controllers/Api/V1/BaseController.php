@@ -17,12 +17,12 @@ abstract class BaseController extends Controller
      */
     protected function successResponse(
         Request $request,
-        JsonResource $resource,
+        JsonResource|null $resource,
         string $message = '',
         int $status = 200,
         array $meta = [],
     ): JsonResponse {
-        $resolved = $resource->resolve($request);
+        $resolved = $resource?->resolve($request) ?? [];
 
         return ApiResponse::success(
             data: $resolved,

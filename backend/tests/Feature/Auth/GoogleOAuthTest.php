@@ -38,7 +38,7 @@ test('it returns the google oauth redirect url', function (): void {
         ->assertOk()
         ->assertJsonPath('success', true)
         ->assertJsonPath('data.redirect_url', 'https://accounts.google.com/o/oauth2/auth')
-        ->assertJsonPath('message', 'Tạo liên kết đăng nhập Google thành công.');
+        ->assertJsonPath('message', 'Tạo liên kết đăng nhập Google thành công!');
 });
 
 test('it creates and logs in a customer from a verified google callback', function (): void {
@@ -54,7 +54,7 @@ test('it creates and logs in a customer from a verified google callback', functi
 
     $response->assertOk()
         ->assertJsonPath('success', true)
-        ->assertJsonPath('message', 'Đăng nhập Google thành công.')
+        ->assertJsonPath('message', 'Đăng nhập Google thành công!')
         ->assertJsonPath('data.email', 'customer@example.com')
         ->assertJsonPath('data.role', UserRole::Customer->value);
 
@@ -107,5 +107,5 @@ test('it rejects google callback when the email belongs to a staff account', fun
     $this->getJson('/api/v1/auth/google/callback?code=valid-code&state=valid-state')
         ->assertUnauthorized()
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Tài khoản không có quyền đăng nhập khu vực khách hàng.');
+        ->assertJsonPath('message', 'Tài khoản không có quyền đăng nhập khu vực khách hàng!');
 });

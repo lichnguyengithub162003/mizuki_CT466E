@@ -43,7 +43,7 @@ test('login throttling rejects excessive attempts', function (): void {
         ->assertTooManyRequests()
         ->assertHeader('Retry-After')
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Quá nhiều yêu cầu. Vui lòng thử lại sau.')
+        ->assertJsonPath('message', 'Quá nhiều yêu cầu. Vui lòng thử lại sau!')
         ->assertJsonStructure(['meta' => ['retry_after']]);
 
     expect($response->json('meta.retry_after'))
@@ -82,7 +82,7 @@ test('registration throttling rejects excessive attempts', function (): void {
         ->assertTooManyRequests()
         ->assertHeader('Retry-After')
         ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Quá nhiều yêu cầu. Vui lòng thử lại sau.')
+        ->assertJsonPath('message', 'Quá nhiều yêu cầu. Vui lòng thử lại sau!')
         ->assertJsonStructure(['meta' => ['retry_after']]);
 
     expect($response->json('meta.retry_after'))
