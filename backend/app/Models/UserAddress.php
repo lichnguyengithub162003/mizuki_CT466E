@@ -7,20 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 #[Fillable([
     'user_id',
     'recipient_name',
-    'phone',
+    'recipient_phone',
+    'province',
+    'district',
+    'ward',
+    'hamlet',
+    'address_line',
+    'is_default',
     'province_code',
+    'ghn_province_id',
     'ghn_district_id',
     'ghn_ward_code',
-    'address',
-    'is_default',
 ])]
 class UserAddress extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     /**
      * @return array<string, string>
@@ -29,7 +36,7 @@ class UserAddress extends Model
     {
         return [
             'ghn_district_id' => 'integer',
-            'is_default' => 'boolean',
+            'is_default'      => 'boolean',
         ];
     }
 

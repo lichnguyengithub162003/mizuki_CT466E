@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Support\ApiResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
         ]);
+        $middleware->redirectGuestsTo(fn() => null);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
@@ -77,5 +79,27 @@ return Application::configure(basePath: dirname(__DIR__))
                     'retry_after' => (int) ($exception->getHeaders()['Retry-After'] ?? 0),
                 ],
             )->withHeaders($exception->getHeaders());
+        });
+
+        $exceptions->render(function (PostTooLargeException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return ApiResponse::error(
+                message: 'File tải lên quá lớn, vui lòng chọn ảnh nhỏ hơn',
+                status: 413,
+            );
+        });
+
+        $exceptions->render(function (InvalidArgumentException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return ApiResponse::error(
+                message: $exception->getMessage(),
+                status: 400,
+            );
         });
     })->create();

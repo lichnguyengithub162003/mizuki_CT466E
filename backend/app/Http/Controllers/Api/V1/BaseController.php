@@ -51,4 +51,24 @@ abstract class BaseController extends Controller
             meta: $meta,
         );
     }
+
+    /**
+     * Return a address info
+     *
+     * @param array<string
+     */
+    protected function successResponseRaw(
+        Request $request,
+        mixed $data,
+        string $message = '',
+        int $status = 200,
+        array $meta = [],
+    ): JsonResponse {
+        return ApiResponse::success(
+            data: $data,
+            message: $message,
+            status: $status,
+            meta: $meta,
+        );
+    }
 }

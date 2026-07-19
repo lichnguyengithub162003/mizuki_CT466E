@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends BaseRepository<User>
@@ -62,5 +63,36 @@ class UserRepository extends BaseRepository
         ])->save();
 
         return $user->refresh();
+    }
+
+    public function updateProfile(User $user, array $data): User
+    {
+        $attributes = [];
+
+        if (array_key_exists('name', $data)) {
+            $attributes['name'] = $data['name'];
+        }
+
+        if (array_key_exists('phone', $data)) {
+            $attributes['phone'] = $data['phone'];
+        }
+
+        $user->fill($attributes)->save();
+
+        return $user->refresh();
+    }
+
+    public function updateAvatar(User $user, string $avatarPath): User
+    {
+        $user->forceFill([
+            'avatar' => $avatarPath,
+        ])->save();
+
+        return $user->refresh();
+    }
+
+    public function updatePassword(User $user, string $password): void
+    {
+        $user->forceFill(['password' => Hash::make($password)])->save();
     }
 }
