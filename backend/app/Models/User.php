@@ -185,4 +185,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class, 'moderated_by_user_id');
     }
+
+    /**
+     * @return HasMany<ProductFavorite, $this>
+     */
+    public function productFavorites(): HasMany
+    {
+        return $this->hasMany(ProductFavorite::class);
+    }
 }

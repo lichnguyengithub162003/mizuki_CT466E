@@ -367,12 +367,103 @@
                     }
                 }
             }
+        },
+        "/api/v1/customer/favorites": {
+            "get": {
+                "tags": [
+                    "Customer Favorites"
+                ],
+                "summary": "Danh sách sản phẩm yêu thích của khách hàng",
+                "operationId": "listCustomerFavorites",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách yêu thích có phân trang"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customer Favorites"
+                ],
+                "summary": "Thêm sản phẩm vào yêu thích",
+                "operationId": "storeCustomerFavorite",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Đã thêm sản phẩm vào yêu thích"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "409": {
+                        "description": "Sản phẩm đã có trong yêu thích"
+                    },
+                    "422": {
+                        "description": "Dữ liệu không hợp lệ"
+                    }
+                }
+            }
+        },
+        "/api/v1/customer/favorites/{product_id}": {
+            "delete": {
+                "tags": [
+                    "Customer Favorites"
+                ],
+                "summary": "Bỏ sản phẩm khỏi yêu thích",
+                "operationId": "deleteCustomerFavorite",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Đã bỏ sản phẩm khỏi yêu thích"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "404": {
+                        "description": "Sản phẩm chưa có trong yêu thích"
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
             "name": "Catalog",
             "description": "Catalog"
+        },
+        {
+            "name": "Customer Favorites",
+            "description": "Customer Favorites"
         }
     ]
 }

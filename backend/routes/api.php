@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Catalog\BrandController;
 use App\Http\Controllers\Api\V1\Catalog\CategoryController;
 use App\Http\Controllers\Api\V1\Catalog\ProductController;
 use App\Http\Controllers\Api\V1\Customer\ProfileController;
+use App\Http\Controllers\Api\V1\Customer\FavoriteController;
 use App\Http\Controllers\Api\V1\LocationController;
 
 
@@ -54,6 +55,13 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::patch('addresses/{id}', [ProfileController::class, 'updateAddress'])->name('addresses.update');
         Route::delete('addresses/{id}', [ProfileController::class, 'destroyAddress'])->name('addresses.destroy');
         Route::patch('addresses/{id}/default', [ProfileController::class, 'setDefaultAddress'])->name('addresses.set-default');
+
+        // Product favorites
+        Route::prefix('favorites')->name('favorites.')->middleware('role:customer')->group(function (): void {
+            Route::get('/', [FavoriteController::class, 'index'])->name('index');
+            Route::post('/', [FavoriteController::class, 'store'])->name('store');
+            Route::delete('{product_id}', [FavoriteController::class, 'destroy'])->name('destroy');
+        });
     });
 
     //Location routes
