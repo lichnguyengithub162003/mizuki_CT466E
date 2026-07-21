@@ -7,6 +7,7 @@ use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class BaseController extends Controller
 {
@@ -29,6 +30,32 @@ abstract class BaseController extends Controller
             message: $message,
             status: $status,
             meta: $meta,
+        );
+    }
+
+    /**
+     * Transform a paginated API Resource into the project-wide success envelope.
+     */
+    protected function paginatedResponse(
+        Request $request,
+        JsonResource $resource,
+        LengthAwarePaginator $paginator,
+        string $message = '',
+        int $status = 200,
+    ): JsonResponse {
+        return $this->successResponse(
+            request: $request,
+            resource: $resource,
+            message: $message,
+            status: $status,
+            meta: [
+                'pagination' => [
+                    'current_page' => $paginator->currentPage(),
+                    'per_page' => $paginator->perPage(),
+                    'total' => $paginator->total(),
+                    'last_page' => $paginator->lastPage(),
+                ],
+            ],
         );
     }
 
