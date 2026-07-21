@@ -33,6 +33,13 @@ return new class extends Migration
 
             $table->index(['is_active', 'starts_at', 'ends_at']);
         });
+
+        Schema::table('carts', function (Blueprint $table): void {
+            $table->foreign('promotion_id')
+                ->references('id')
+                ->on('promotions')
+                ->nullOnDelete();
+        });
     }
 
     /**
@@ -40,6 +47,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('carts', function (Blueprint $table): void {
+            $table->dropForeign(['promotion_id']);
+        });
+
         Schema::dropIfExists('promotions');
     }
 };

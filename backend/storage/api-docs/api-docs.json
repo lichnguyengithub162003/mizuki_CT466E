@@ -540,6 +540,98 @@
                 }
             }
         },
+        "/api/v1/customer/cart/promotions": {
+            "get": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Xem voucher khả dụng cho giỏ hàng",
+                "operationId": "listAvailableCartPromotions",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách voucher khả dụng"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "403": {
+                        "description": "Không phải tài khoản khách hàng"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/customer/cart/promotion": {
+            "post": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Áp dụng voucher cho giỏ hàng",
+                "operationId": "applyCartPromotion",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "MIZUKI10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Đã áp dụng voucher"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "422": {
+                        "description": "Voucher không đủ điều kiện áp dụng"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Hủy voucher đã áp dụng trên giỏ hàng",
+                "operationId": "removeCartPromotion",
+                "responses": {
+                    "200": {
+                        "description": "Đã hủy voucher"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "404": {
+                        "description": "Giỏ hàng chưa áp dụng voucher"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/customer/favorites": {
             "get": {
                 "tags": [

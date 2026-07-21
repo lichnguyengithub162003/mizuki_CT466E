@@ -6,6 +6,7 @@ use App\Models\BranchInventory;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\ProductVariant;
+use App\Models\Promotion;
 use App\Models\User;
 use App\Repositories\CartItemRepository;
 use App\Repositories\CartRepository;
@@ -81,6 +82,25 @@ class CartService extends BaseService
         return $this->prepareCart($cart);
     }
 
+    public function calculatePromotionDiscount(Promotion $promotion, int $totalBeforeDiscount): int
+    {
+        if ($totalBeforeDiscount < $promotion->minimum_order_amount) {
+            return 0;
+        }
+
+        $discount = match ($promotion->discount_type) {
+            'percentage', 'percent' => (int) floor($totalBeforeDiscount * $promotion->discount_value / 100),
+            'fixed', 'fixed_amount' => $promotion->discount_value,
+            default => 0,
+        };
+
+        if ($promotion->max_discount_amount !== null) {
+            $discount = min($discount, $promotion->max_discount_amount);
+        }
+
+        return max(0, min($discount, $totalBeforeDiscount));
+    }
+
     private function getActiveVariantOrFail(int $variantId): ProductVariant
     {
         $variant = $this->items->findActiveVariant($variantId);
@@ -154,6 +174,12 @@ class CartService extends BaseService
 
         $cart->setAttribute('total_quantity', $totalQuantity);
         $cart->setAttribute('total_amount', $totalAmount);
+        $discountAmount = $cart->promotion === null
+            ? 0
+            : $this->calculatePromotionDiscount($cart->promotion, $totalAmount);
+        $cart->setAttribute('total_before_discount', $totalAmount);
+        $cart->setAttribute('discount_amount', $discountAmount);
+        $cart->setAttribute('total_after_discount', $totalAmount - $discountAmount);
 
         return $cart;
     }

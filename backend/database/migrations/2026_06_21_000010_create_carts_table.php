@@ -18,6 +18,8 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
+            // The foreign key is added after the promotions table is created.
+            $table->unsignedBigInteger('promotion_id')->nullable()->index();
             $table->timestamps();
 
             $table->unique('user_id');

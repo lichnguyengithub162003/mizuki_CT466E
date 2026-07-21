@@ -31,10 +31,20 @@ class CartRepository extends BaseRepository
         return $cart->refresh();
     }
 
+    public function updatePromotion(Cart $cart, ?int $promotionId): Cart
+    {
+        $this->query()
+            ->whereKey($cart->id)
+            ->update(['promotion_id' => $promotionId]);
+
+        return $cart->refresh();
+    }
+
     public function loadDetails(Cart $cart): Cart
     {
         return $cart->load([
             'branch:id,name,address',
+            'promotion:id,code,name,discount_type,discount_value,max_discount_amount,minimum_order_amount',
             'items' => fn (Builder|HasMany $itemQuery): Builder|HasMany => $itemQuery->orderBy('id'),
             'items.productVariant.product:id,name,slug',
             'items.productVariant.product.images' => fn (Builder|HasMany $imageQuery): Builder|HasMany => $imageQuery

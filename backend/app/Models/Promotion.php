@@ -62,4 +62,12 @@ class Promotion extends Model
     {
         return $this->hasMany(PromotionUsage::class);
     }
+
+    /**
+     * @return HasMany<Cart, $this>
+     */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

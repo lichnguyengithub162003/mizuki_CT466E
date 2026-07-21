@@ -48,6 +48,13 @@ class CartResource extends JsonResource
                 ->all(),
             'total_quantity' => $this->total_quantity,
             'total_amount' => $this->total_amount,
+            'applied_promotion' => $this->promotion === null ? null : [
+                'code' => $this->promotion->code,
+                'discount_amount' => $this->discount_amount,
+            ],
+            'total_before_discount' => $this->total_before_discount,
+            'discount_amount' => $this->discount_amount,
+            'total_after_discount' => $this->total_after_discount,
         ];
     }
 }

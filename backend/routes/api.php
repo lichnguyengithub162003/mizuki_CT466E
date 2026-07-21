@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Catalog\ProductController;
 use App\Http\Controllers\Api\V1\Customer\ProfileController;
 use App\Http\Controllers\Api\V1\Customer\FavoriteController;
 use App\Http\Controllers\Api\V1\Customer\CartController;
+use App\Http\Controllers\Api\V1\Customer\CartPromotionController;
 use App\Http\Controllers\Api\V1\LocationController;
 
 
@@ -71,6 +72,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::patch('items/{id}', [CartController::class, 'update'])->name('items.update');
             Route::delete('items/{id}', [CartController::class, 'destroy'])->name('items.destroy');
             Route::patch('branch', [CartController::class, 'selectBranch'])->name('branch.update');
+            Route::get('promotions', [CartPromotionController::class, 'index'])->name('promotions.index');
+            Route::post('promotion', [CartPromotionController::class, 'store'])->name('promotion.store');
+            Route::delete('promotion', [CartPromotionController::class, 'destroy'])->name('promotion.destroy');
         });
     });
 
