@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Catalog\CategoryController;
 use App\Http\Controllers\Api\V1\Catalog\ProductController;
 use App\Http\Controllers\Api\V1\Customer\ProfileController;
 use App\Http\Controllers\Api\V1\Customer\FavoriteController;
+use App\Http\Controllers\Api\V1\Customer\CartController;
 use App\Http\Controllers\Api\V1\LocationController;
 
 
@@ -61,6 +62,15 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::get('/', [FavoriteController::class, 'index'])->name('index');
             Route::post('/', [FavoriteController::class, 'store'])->name('store');
             Route::delete('{product_id}', [FavoriteController::class, 'destroy'])->name('destroy');
+        });
+
+        // Shopping cart
+        Route::prefix('cart')->name('cart.')->middleware('role:customer')->group(function (): void {
+            Route::get('/', [CartController::class, 'index'])->name('index');
+            Route::post('items', [CartController::class, 'store'])->name('items.store');
+            Route::patch('items/{id}', [CartController::class, 'update'])->name('items.update');
+            Route::delete('items/{id}', [CartController::class, 'destroy'])->name('items.destroy');
+            Route::patch('branch', [CartController::class, 'selectBranch'])->name('branch.update');
         });
     });
 

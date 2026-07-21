@@ -368,6 +368,178 @@
                 }
             }
         },
+        "/api/v1/customer/cart": {
+            "get": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Xem giỏ hàng hiện tại",
+                "operationId": "showCustomerCart",
+                "responses": {
+                    "200": {
+                        "description": "Chi tiết giỏ hàng"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "403": {
+                        "description": "Không phải tài khoản khách hàng"
+                    }
+                }
+            }
+        },
+        "/api/v1/customer/cart/items": {
+            "post": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Thêm biến thể sản phẩm vào giỏ hàng",
+                "operationId": "addCustomerCartItem",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_variant_id",
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "product_variant_id": {
+                                        "type": "integer"
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "minimum": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Đã thêm vào giỏ hàng"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "422": {
+                        "description": "Dữ liệu hoặc tồn kho không hợp lệ"
+                    }
+                }
+            }
+        },
+        "/api/v1/customer/cart/items/{id}": {
+            "delete": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Xóa sản phẩm khỏi giỏ hàng",
+                "operationId": "deleteCustomerCartItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Đã xóa sản phẩm khỏi giỏ hàng"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy sản phẩm trong giỏ"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Cập nhật số lượng sản phẩm trong giỏ",
+                "operationId": "updateCustomerCartItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "quantity": {
+                                        "type": "integer",
+                                        "minimum": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Đã cập nhật giỏ hàng"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy sản phẩm trong giỏ"
+                    },
+                    "422": {
+                        "description": "Số lượng vượt tồn kho"
+                    }
+                }
+            }
+        },
+        "/api/v1/customer/cart/branch": {
+            "patch": {
+                "tags": [
+                    "Customer Cart"
+                ],
+                "summary": "Chọn chi nhánh cho giỏ hàng",
+                "operationId": "selectCustomerCartBranch",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "branch_id"
+                                ],
+                                "properties": {
+                                    "branch_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Đã chọn chi nhánh"
+                    },
+                    "422": {
+                        "description": "Chi nhánh không hợp lệ"
+                    }
+                }
+            }
+        },
         "/api/v1/customer/favorites": {
             "get": {
                 "tags": [
@@ -460,6 +632,10 @@
         {
             "name": "Catalog",
             "description": "Catalog"
+        },
+        {
+            "name": "Customer Cart",
+            "description": "Customer Cart"
         },
         {
             "name": "Customer Favorites",
