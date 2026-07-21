@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('logo_url')->nullable();
+            $table->string('banner_image')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();

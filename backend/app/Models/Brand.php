@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'name',
     'slug',
     'logo_url',
+    'banner_image',
     'description',
     'is_active',
 ])]

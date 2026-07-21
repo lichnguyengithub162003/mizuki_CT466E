@@ -3,11 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\CustomerAuthController;
 use App\Http\Controllers\Api\V1\Auth\GoogleAuthController;
+use App\Http\Controllers\Api\V1\Catalog\BrandController;
+use App\Http\Controllers\Api\V1\Catalog\CategoryController;
 use App\Http\Controllers\Api\V1\Customer\ProfileController;
 use App\Http\Controllers\Api\V1\LocationController;
 
 
 Route::prefix('v1')->name('api.v1.')->group(function (): void {
+
+    // Public catalog routes
+    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
+    Route::get('brands/{slug}', [BrandController::class, 'show'])->name('brands.show');
 
     // Auth routes
     Route::prefix('auth')->name('auth.')->group(function (): void {
