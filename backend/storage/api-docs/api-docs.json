@@ -250,6 +250,58 @@
                     }
                 }
             }
+        },
+        "/api/v1/products/{slug}": {
+            "get": {
+                "tags": [
+                    "Catalog"
+                ],
+                "summary": "Chi tiết sản phẩm",
+                "operationId": "showProduct",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug của sản phẩm",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "serum-phuc-hoi-da"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chi tiết sản phẩm, biến thể và tồn kho",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lấy chi tiết sản phẩm thành công!"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy sản phẩm"
+                    }
+                }
+            }
         }
     },
     "tags": [

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\V1\Catalog;
 use App\Http\Controllers\Api\V1\BaseController;
 use App\Http\Requests\Catalog\ProductIndexRequest;
 use App\Http\Resources\Catalog\ProductListResource;
+use App\Http\Resources\Catalog\ProductDetailResource;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 
 class ProductController extends BaseController
@@ -57,6 +59,51 @@ class ProductController extends BaseController
             resource: ProductListResource::collection($paginator->getCollection()),
             paginator: $paginator,
             message: 'Lấy danh sách sản phẩm thành công!',
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/products/{slug}",
+     *     operationId="showProduct",
+     *     tags={"Catalog"},
+     *     summary="Chi tiết sản phẩm",
+     *     @OA\Parameter(
+     *         name="slug",
+     *         in="path",
+     *         required=true,
+     *         description="Slug của sản phẩm",
+     *         @OA\Schema(type="string", example="serum-phuc-hoi-da")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Chi tiết sản phẩm, biến thể và tồn kho",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Lấy chi tiết sản phẩm thành công!"),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Không tìm thấy sản phẩm")
+     * )
+     */
+    public function show(Request $request, string $slug): JsonResponse
+    {
+        $product = $this->products->getActiveProductDetail($slug);
+
+        if ($product === null) {
+            return $this->errorResponse(
+                message: 'Không tìm thấy sản phẩm',
+                status: 404,
+            );
+        }
+
+        return $this->successResponse(
+            request: $request,
+            resource: new ProductDetailResource($product),
+            message: 'Lấy chi tiết sản phẩm thành công!',
         );
     }
 }

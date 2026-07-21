@@ -69,6 +69,40 @@ class ProductRepository extends BaseRepository
         return $query->paginate((int) ($filters['per_page'] ?? 20));
     }
 
+    public function findActiveDetailBySlug(string $slug): ?Product
+    {
+        return $this->query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->with([
+                'category:id,name,parent_id',
+                'brand:id,name',
+                'images' => function (Builder|HasMany $query): void {
+                    $query
+                        ->orderByDesc('is_primary')
+                        ->orderBy('sort_order')
+                        ->orderBy('id');
+                },
+                'variants' => function (Builder|HasMany $query): void {
+                    $query
+                        ->where('is_active', true)
+                        ->orderBy('sort_order')
+                        ->orderBy('id')
+                        ->with([
+                            'inventories' => function (Builder|HasMany $inventoryQuery): void {
+                                $inventoryQuery
+                                    ->whereHas(
+                                        'branch',
+                                        fn (Builder $branchQuery): Builder => $branchQuery->where('is_active', true),
+                                    )
+                                    ->with('branch:id,name');
+                            },
+                        ]);
+                },
+            ])
+            ->first();
+    }
+
     /**
      * Return the lowest effective variant price for each product.
      *
