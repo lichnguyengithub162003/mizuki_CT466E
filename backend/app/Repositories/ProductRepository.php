@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -61,12 +62,37 @@ class ProductRepository extends BaseRepository
         }
 
         if (! empty($filters['keyword'])) {
-            $query->where('products.name', 'like', '%'.$filters['keyword'].'%');
+            $this->applyKeywordFilter($query, (string) $filters['keyword']);
         }
 
         $this->applySort($query, (string) ($filters['sort'] ?? 'newest'));
 
         return $query->paginate((int) ($filters['per_page'] ?? 20));
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function searchActiveSuggestions(string $keyword, int $limit): Collection
+    {
+        $query = $this->query()
+            ->select('products.*')
+            ->addSelect(['minimum_price' => $this->minimumPriceSubquery()])
+            ->with([
+                'images' => fn (Builder|HasMany $imageQuery): Builder|HasMany => $imageQuery
+                    ->where('is_primary', true)
+                    ->orderBy('sort_order'),
+            ])
+            ->where('products.is_active', true)
+            ->whereHas('variants', fn (Builder $variantQuery): Builder => $variantQuery->where('is_active', true));
+
+        $this->applyKeywordFilter($query, $keyword);
+
+        return $query
+            ->orderByRaw('CASE WHEN products.name LIKE ? THEN 0 ELSE 1 END', [$keyword.'%'])
+            ->orderBy('products.name')
+            ->limit($limit)
+            ->get();
     }
 
     public function findActiveDetailBySlug(string $slug): ?Product
@@ -131,6 +157,14 @@ class ProductRepository extends BaseRepository
             $operator,
             $price,
         );
+    }
+
+    /**
+     * @param Builder<Product> $query
+     */
+    private function applyKeywordFilter(Builder $query, string $keyword): void
+    {
+        $query->where('products.name', 'like', '%'.$keyword.'%');
     }
 
     /**

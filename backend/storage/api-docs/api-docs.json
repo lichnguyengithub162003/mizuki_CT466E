@@ -251,6 +251,71 @@
                 }
             }
         },
+        "/api/v1/products/search": {
+            "get": {
+                "tags": [
+                    "Catalog"
+                ],
+                "summary": "Gợi ý sản phẩm theo từ khóa",
+                "operationId": "searchProductSuggestions",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "serum",
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 8,
+                            "maximum": 20,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách gợi ý sản phẩm",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tìm kiếm thành công!"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Query params không hợp lệ"
+                    }
+                }
+            }
+        },
         "/api/v1/products/{slug}": {
             "get": {
                 "tags": [

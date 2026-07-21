@@ -12,13 +12,6 @@ use App\Http\Controllers\Api\V1\LocationController;
 
 Route::prefix('v1')->name('api.v1.')->group(function (): void {
 
-    // Public catalog routes
-    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
-    Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
-    Route::get('brands/{slug}', [BrandController::class, 'show'])->name('brands.show');
-    Route::get('products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('products/{slug}', [ProductController::class, 'show'])->name('products.show');
-
     // Auth routes
     Route::prefix('auth')->name('auth.')->group(function (): void {
         Route::post('register', [CustomerAuthController::class, 'register'])
@@ -69,4 +62,13 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('provinces/{provinceId}/districts', [LocationController::class, 'districts'])->name('districts');
         Route::get('districts/{districtId}/wards', [LocationController::class, 'wards'])->name('wards');
     });
+
+
+    // Public catalog routes
+    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
+    Route::get('brands/{slug}', [BrandController::class, 'show'])->name('brands.show');
+    Route::get('products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('products/search', [ProductController::class, 'search'])->name('products.search');
+    Route::get('products/{slug}', [ProductController::class, 'show'])->name('products.show');
 });

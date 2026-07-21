@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\V1\Catalog;
 
 use App\Http\Controllers\Api\V1\BaseController;
 use App\Http\Requests\Catalog\ProductIndexRequest;
+use App\Http\Requests\Catalog\ProductSearchRequest;
 use App\Http\Resources\Catalog\ProductListResource;
 use App\Http\Resources\Catalog\ProductDetailResource;
+use App\Http\Resources\Catalog\ProductSuggestResource;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,6 +61,51 @@ class ProductController extends BaseController
             resource: ProductListResource::collection($paginator->getCollection()),
             paginator: $paginator,
             message: 'Lấy danh sách sản phẩm thành công!',
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/products/search",
+     *     operationId="searchProductSuggestions",
+     *     tags={"Catalog"},
+     *     summary="Gợi ý sản phẩm theo từ khóa",
+     *     @OA\Parameter(
+     *         name="keyword",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="string", minLength=1, example="serum")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         @OA\Schema(type="integer", minimum=1, maximum=20, default=8)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Danh sách gợi ý sản phẩm",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="message", type="string", example="Tìm kiếm thành công!"),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Query params không hợp lệ")
+     * )
+     */
+    public function search(ProductSearchRequest $request): JsonResponse
+    {
+        $products = $this->products->searchActiveProducts(
+            keyword: (string) $request->validated('keyword'),
+            limit: (int) $request->validated('limit', 8),
+        );
+
+        return $this->successResponse(
+            request: $request,
+            resource: ProductSuggestResource::collection($products),
+            message: 'Tìm kiếm thành công!',
         );
     }
 

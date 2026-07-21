@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\BranchInventory;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ProductRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService extends BaseService
@@ -64,6 +65,14 @@ class ProductService extends BaseService
         }
 
         return $product;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function searchActiveProducts(string $keyword, int $limit = 8): Collection
+    {
+        return $this->products->searchActiveSuggestions($keyword, $limit);
     }
 
     /**
