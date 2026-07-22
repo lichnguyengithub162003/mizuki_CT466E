@@ -94,6 +94,44 @@ test('it rejects non-customer users from customer login', function (): void {
     ], customerAuthRequest());
 })->throws(AuthenticationException::class, 'Tài khoản không có quyền đăng nhập khu vực khách hàng!');
 
+test('it logs in internal staff through the staff login flow', function (): void {
+    $service = new CustomerAuthService(new UserRepository(new User()));
+    $user = User::factory()->create([
+        'email' => 'manager@example.com',
+        'password' => 'secret-password',
+        'role' => UserRole::BranchManager,
+    ]);
+
+    $authenticatedUser = $service->staffLogin([
+        'email' => '  MANAGER@EXAMPLE.COM  ',
+        'password' => 'secret-password',
+    ], customerAuthRequest('/api/v1/auth/staff-login'));
+
+    expect($authenticatedUser->is($user))->toBeTrue();
+    $this->assertAuthenticatedAs($user);
+});
+
+test('it rejects customers from the staff login flow', function (): void {
+    $service = new CustomerAuthService(new UserRepository(new User()));
+    User::factory()->create([
+        'email' => 'customer@example.com',
+        'password' => 'secret-password',
+        'role' => UserRole::Customer,
+    ]);
+
+    $service->staffLogin([
+        'email' => 'customer@example.com',
+        'password' => 'secret-password',
+    ], customerAuthRequest('/api/v1/auth/staff-login'));
+})->throws(AuthenticationException::class, 'Vui lòng đăng nhập tại khu vực khách hàng!');
+
+test('it returns any current authenticated user for the shared identity endpoint', function (): void {
+    $service = new CustomerAuthService(new UserRepository(new User()));
+    $user = User::factory()->create(['role' => UserRole::Technician]);
+
+    expect($service->currentUser($user)->is($user))->toBeTrue();
+});
+
 test('it returns the current authenticated customer', function (): void {
     $service = new CustomerAuthService(new UserRepository(new User()));
     $user = User::factory()->create([

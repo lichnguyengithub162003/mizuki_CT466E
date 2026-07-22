@@ -45,11 +45,7 @@ class CustomerAuthService extends BaseService
      */
     public function login(array $data, Request $request): User
     {
-        $user = $this->users->findByEmail(strtolower(trim($data['email'])));
-
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
-            throw new AuthenticationException('Thông tin đăng nhập không đúng!');
-        }
+        $user = $this->userFromCredentials($data);
 
         if ($user->role !== UserRole::Customer) {
             throw new AuthenticationException('Tài khoản không có quyền đăng nhập khu vực khách hàng!');
@@ -57,6 +53,29 @@ class CustomerAuthService extends BaseService
 
         $this->authenticate($user, $request);
 
+        return $user;
+    }
+
+    /**
+     * @param array{email: string, password: string} $data
+     *
+     * @throws AuthenticationException
+     */
+    public function staffLogin(array $data, Request $request): User
+    {
+        $user = $this->userFromCredentials($data);
+
+        if ($user->role === UserRole::Customer) {
+            throw new AuthenticationException('Vui lòng đăng nhập tại khu vực khách hàng!');
+        }
+
+        $this->authenticate($user, $request);
+
+        return $user;
+    }
+
+    public function currentUser(User $user): User
+    {
         return $user;
     }
 
@@ -96,6 +115,22 @@ class CustomerAuthService extends BaseService
         if ($request->hasSession()) {
             $request->session()->regenerate();
         }
+    }
+
+    /**
+     * @param array{email: string, password: string} $data
+     *
+     * @throws AuthenticationException
+     */
+    private function userFromCredentials(array $data): User
+    {
+        $user = $this->users->findByEmail(strtolower(trim($data['email'])));
+
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
+            throw new AuthenticationException('Thông tin đăng nhập không đúng!');
+        }
+
+        return $user;
     }
 
     public function forgotPassword(string $email): void

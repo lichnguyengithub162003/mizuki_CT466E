@@ -6,6 +6,181 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/v1/admin/promotions": {
+            "get": {
+                "tags": [
+                    "Admin Promotions"
+                ],
+                "summary": "Danh sách promotion theo quyền quản trị",
+                "operationId": "adminListPromotions",
+                "parameters": [
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "discount_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "percentage",
+                                "fixed_amount"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách promotion"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "403": {
+                        "description": "Không có quyền quản trị promotion"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Admin Promotions"
+                ],
+                "summary": "Tạo promotion",
+                "operationId": "adminCreatePromotion",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Đã tạo promotion"
+                    },
+                    "403": {
+                        "description": "Không có quyền tạo promotion"
+                    },
+                    "422": {
+                        "description": "Dữ liệu không hợp lệ"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/promotions/{id}": {
+            "delete": {
+                "tags": [
+                    "Admin Promotions"
+                ],
+                "summary": "Xóa promotion",
+                "operationId": "adminDeletePromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Đã xóa promotion"
+                    },
+                    "403": {
+                        "description": "Không có quyền xóa promotion"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy promotion"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Admin Promotions"
+                ],
+                "summary": "Cập nhật promotion",
+                "operationId": "adminUpdatePromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Đã cập nhật promotion"
+                    },
+                    "403": {
+                        "description": "Không có quyền sửa promotion"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy promotion"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/promotions/{id}/usage-stats": {
+            "get": {
+                "tags": [
+                    "Admin Promotions"
+                ],
+                "summary": "Thống kê lượt sử dụng promotion",
+                "operationId": "adminPromotionUsageStats",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thống kê lượt sử dụng"
+                    },
+                    "403": {
+                        "description": "Không có quyền xem promotion"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy promotion"
+                    }
+                }
+            }
+        },
         "/api/v1/brands": {
             "get": {
                 "tags": [
@@ -721,6 +896,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin Promotions",
+            "description": "Admin Promotions"
+        },
         {
             "name": "Catalog",
             "description": "Catalog"

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Customer\ProfileController;
 use App\Http\Controllers\Api\V1\Customer\FavoriteController;
 use App\Http\Controllers\Api\V1\Customer\CartController;
 use App\Http\Controllers\Api\V1\Customer\CartPromotionController;
+use App\Http\Controllers\Api\V1\Admin\PromotionController as AdminPromotionController;
 use App\Http\Controllers\Api\V1\LocationController;
 
 
@@ -23,6 +24,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('login', [CustomerAuthController::class, 'login'])
             ->middleware('throttle:auth.login')
             ->name('login');
+        Route::post('staff-login', [CustomerAuthController::class, 'staffLogin'])
+            ->middleware('throttle:auth.login')
+            ->name('staff-login');
         Route::get('me', [CustomerAuthController::class, 'me'])
             ->middleware('auth:sanctum')
             ->name('me');
@@ -76,6 +80,20 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::post('promotion', [CartPromotionController::class, 'store'])->name('promotion.store');
             Route::delete('promotion', [CartPromotionController::class, 'destroy'])->name('promotion.destroy');
         });
+    });
+
+    // Admin routes
+    Route::prefix('admin')->name('admin.')->middleware('auth:sanctum')->group(function (): void {
+        Route::prefix('promotions')
+            ->name('promotions.')
+            ->middleware('role:branch_manager,super_admin')
+            ->group(function (): void {
+                Route::get('/', [AdminPromotionController::class, 'index'])->name('index');
+                Route::post('/', [AdminPromotionController::class, 'store'])->name('store');
+                Route::patch('{id}', [AdminPromotionController::class, 'update'])->name('update');
+                Route::delete('{id}', [AdminPromotionController::class, 'destroy'])->name('destroy');
+                Route::get('{id}/usage-stats', [AdminPromotionController::class, 'usageStats'])->name('usage-stats');
+            });
     });
 
     //Location routes

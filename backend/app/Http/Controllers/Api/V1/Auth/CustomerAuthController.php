@@ -41,11 +41,22 @@ class CustomerAuthController extends BaseController
         );
     }
 
+    public function staffLogin(CustomerLoginRequest $request): JsonResponse
+    {
+        $user = $this->auth->staffLogin($request->validated(), $request);
+
+        return $this->successResponse(
+            request: $request,
+            resource: new AuthenticatedUserResource($user),
+            message: 'Đăng nhập thành công!',
+        );
+    }
+
     public function me(Request $request): JsonResponse
     {
         /** @var \App\Models\User $authenticatedUser */
         $authenticatedUser = $request->user();
-        $user = $this->auth->currentCustomer($authenticatedUser);
+        $user = $this->auth->currentUser($authenticatedUser);
 
         return $this->successResponse(
             request: $request,

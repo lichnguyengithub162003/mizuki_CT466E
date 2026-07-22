@@ -33,7 +33,7 @@ test('a guest cannot view the customer account endpoint', function (): void {
         ->assertJsonPath('message', 'Bạn cần đăng nhập để tiếp tục');
 });
 
-test('an authenticated staff user cannot view the customer account endpoint', function (): void {
+test('an authenticated staff user can view their identity through the shared me endpoint', function (): void {
     $user = User::factory()->create([
         'email' => 'cashier@example.com',
         'role' => UserRole::Cashier,
@@ -42,7 +42,9 @@ test('an authenticated staff user cannot view the customer account endpoint', fu
 
     $response = $this->getJson('/api/v1/auth/me');
 
-    $response->assertForbidden()
-        ->assertJsonPath('success', false)
-        ->assertJsonPath('message', 'Tài khoản không có quyền truy cập khu vực khách hàng!');
+    $response->assertOk()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('data.id', $user->id)
+        ->assertJsonPath('data.email', 'cashier@example.com')
+        ->assertJsonPath('data.role', UserRole::Cashier->value);
 });
