@@ -83,6 +83,15 @@ class PromotionService extends BaseService
         return $this->cartService->getForUser($user);
     }
 
+    public function validateForCheckout(Promotion $promotion, Cart $cart, User $user): void
+    {
+        $error = $this->eligibilityError($promotion, $cart, $user);
+
+        if ($error !== null) {
+            $this->throwCodeError($error);
+        }
+    }
+
     private function eligibilityError(Promotion $promotion, Cart $cart, User $user): ?string
     {
         if (! $promotion->is_active || $promotion->applies_to !== 'order') {

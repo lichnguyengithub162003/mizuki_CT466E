@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Customer\ProfileController;
 use App\Http\Controllers\Api\V1\Customer\FavoriteController;
 use App\Http\Controllers\Api\V1\Customer\CartController;
 use App\Http\Controllers\Api\V1\Customer\CartPromotionController;
+use App\Http\Controllers\Api\V1\Customer\OrderController;
 use App\Http\Controllers\Api\V1\Admin\PromotionController as AdminPromotionController;
 use App\Http\Controllers\Api\V1\LocationController;
 
@@ -79,6 +80,13 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::get('promotions', [CartPromotionController::class, 'index'])->name('promotions.index');
             Route::post('promotion', [CartPromotionController::class, 'store'])->name('promotion.store');
             Route::delete('promotion', [CartPromotionController::class, 'destroy'])->name('promotion.destroy');
+        });
+
+        // Orders
+        Route::prefix('orders')->name('orders.')->middleware('role:customer')->group(function (): void {
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            Route::post('/', [OrderController::class, 'store'])->name('store');
+            Route::get('{id}', [OrderController::class, 'show'])->name('show');
         });
     });
 

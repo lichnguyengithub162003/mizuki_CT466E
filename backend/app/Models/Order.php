@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,8 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'branch_id',
     'created_by_user_id',
     'user_address_id',
+    'promotion_id',
     'channel',
     'fulfillment_method',
+    'payment_method',
     'status',
     'recipient_name',
     'recipient_phone',
@@ -41,6 +44,7 @@ class Order extends Model
     {
         return [
             'status' => OrderStatus::class,
+            'payment_method' => PaymentMethod::class,
             'ghn_district_id' => 'integer',
             'subtotal' => 'integer',
             'discount_amount' => 'integer',
@@ -81,6 +85,14 @@ class Order extends Model
     public function userAddress(): BelongsTo
     {
         return $this->belongsTo(UserAddress::class);
+    }
+
+    /**
+     * @return BelongsTo<Promotion, $this>
+     */
+    public function promotion(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class);
     }
 
     /**

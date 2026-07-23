@@ -210,6 +210,7 @@ test('an exhausted promotion is rejected based on recorded usages', function ():
         'order_number' => 'ORD-'.Str::upper(Str::random(10)),
         'user_id' => $context['other_user']->id,
         'branch_id' => $context['branch']->id,
+        'payment_method' => 'cash',
         'subtotal' => 300_000,
         'discount_amount' => 30_000,
         'shipping_fee' => 0,

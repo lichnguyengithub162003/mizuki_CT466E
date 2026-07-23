@@ -24,6 +24,25 @@ class CartRepository extends BaseRepository
         return $cart;
     }
 
+    public function lockForCheckout(int $userId): Cart
+    {
+        $this->query()->firstOrCreate(['user_id' => $userId]);
+
+        /** @var Cart $cart */
+        $cart = $this->query()
+            ->where('user_id', $userId)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        return $cart;
+    }
+
+    public function clearAfterCheckout(Cart $cart): void
+    {
+        $cart->items()->delete();
+        $this->query()->whereKey($cart->id)->update(['promotion_id' => null]);
+    }
+
     public function updateBranch(Cart $cart, int $branchId): Cart
     {
         $cart->fill(['branch_id' => $branchId])->save();

@@ -40,6 +40,13 @@ return new class extends Migration
                 ->on('promotions')
                 ->nullOnDelete();
         });
+
+        Schema::table('orders', function (Blueprint $table): void {
+            $table->foreign('promotion_id')
+                ->references('id')
+                ->on('promotions')
+                ->nullOnDelete();
+        });
     }
 
     /**
@@ -47,6 +54,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('orders', function (Blueprint $table): void {
+            $table->dropForeign(['promotion_id']);
+        });
+
         Schema::table('carts', function (Blueprint $table): void {
             $table->dropForeign(['promotion_id']);
         });

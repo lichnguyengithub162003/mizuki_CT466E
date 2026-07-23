@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Enums\UserRole;
 use App\Models\Promotion;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -141,6 +143,27 @@ class PromotionRepository extends BaseRepository
             ->with('branches:id')
             ->withCount('usages')
             ->find($id);
+    }
+
+    public function lockForCheckout(int $promotionId, int $userId): ?Promotion
+    {
+        return $this->withEligibilityData($userId)
+            ->whereKey($promotionId)
+            ->lockForUpdate()
+            ->first();
+    }
+
+    public function recordUsage(Promotion $promotion, User $user, Order $order, int $discountAmount): void
+    {
+        $promotion->increment('usage_count');
+        $promotion->usages()->create([
+            'user_id' => $user->id,
+            'order_id' => $order->id,
+            'promotion_code' => $promotion->code,
+            'promotion_name' => $promotion->name,
+            'discount_amount' => $discountAmount,
+            'used_at' => now(),
+        ]);
     }
 
     /**

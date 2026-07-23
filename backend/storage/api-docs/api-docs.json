@@ -893,6 +893,119 @@
                     }
                 }
             }
+        },
+        "/api/v1/customer/orders": {
+            "get": {
+                "tags": [
+                    "Customer Orders"
+                ],
+                "summary": "Danh sách đơn hàng của khách hàng",
+                "operationId": "customerOrderList",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách đơn hàng"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customer Orders"
+                ],
+                "summary": "Tạo đơn hàng từ giỏ hàng hiện tại",
+                "operationId": "customerCheckout",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "delivery_method",
+                                    "payment_method"
+                                ],
+                                "properties": {
+                                    "delivery_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pickup",
+                                            "delivery"
+                                        ]
+                                    },
+                                    "address_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "wallet",
+                                            "vnpay",
+                                            "cash"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Đã tạo đơn hàng"
+                    },
+                    "401": {
+                        "description": "Chưa đăng nhập"
+                    },
+                    "422": {
+                        "description": "Giỏ hàng không đủ điều kiện checkout"
+                    }
+                }
+            }
+        },
+        "/api/v1/customer/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Customer Orders"
+                ],
+                "summary": "Chi tiết đơn hàng của khách hàng",
+                "operationId": "customerOrderDetail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chi tiết đơn hàng"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy đơn hàng"
+                    }
+                }
+            }
         }
     },
     "tags": [
@@ -911,6 +1024,10 @@
         {
             "name": "Customer Favorites",
             "description": "Customer Favorites"
+        },
+        {
+            "name": "Customer Orders",
+            "description": "Customer Orders"
         }
     ]
 }

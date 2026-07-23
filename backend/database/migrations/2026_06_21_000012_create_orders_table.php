@@ -24,8 +24,11 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
+            // The foreign key is added after the promotions table is created.
+            $table->unsignedBigInteger('promotion_id')->nullable()->index();
             $table->string('channel', 20)->default('online');
             $table->string('fulfillment_method', 20)->default('shipping');
+            $table->string('payment_method', 20);
             $table->string('status', 30)->default('pending')->index();
             $table->string('recipient_name')->nullable();
             $table->string('recipient_phone', 20)->nullable();
